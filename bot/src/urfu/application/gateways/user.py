@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from urfu.domain.dto.user import CreateUserDTO
+from urfu.domain.dto.user import CreateUserDTO, UpdateUserDTO
 from urfu.domain.entities.user import UserEntity
 from urfu.domain.value_objects.user import TelegramId, UserId
 
@@ -12,3 +12,7 @@ class UserReader(Protocol):
 
 class UserWriter(Protocol):
     async def save(self, dto: CreateUserDTO) -> UserEntity: ...
+
+
+class UserUpdater(Protocol):
+    async def update(self, dto: UpdateUserDTO) -> UserEntity: ...

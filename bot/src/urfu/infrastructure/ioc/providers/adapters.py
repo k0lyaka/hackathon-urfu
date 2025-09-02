@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import (
 
 from urfu.infrastructure.settings import AppSettings
 from urfu.presentation.bot.handlers import setup_handlers
+from urfu.presentation.bot.middleware import setup_middlewares
 
 
 class SQLAlchemyProvider(Provider):
@@ -58,7 +59,9 @@ class BotProvider(Provider):
         # TODO: add redis storage
 
         dp = Dispatcher()
+
         setup_dishka(container, dp, auto_inject=True)
+        setup_middlewares(dp)
         setup_handlers(dp)
 
         return dp
