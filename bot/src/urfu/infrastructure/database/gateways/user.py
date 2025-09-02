@@ -1,0 +1,51 @@
+from dataclasses import dataclass
+
+from sqlalchemy import insert, select
+from sqlalchemy.exc import NoResultFound
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from urfu.application.gateways.user import UserReader, UserWriter
+from urfu.domain.dto.user import CreateUserDTO
+from urfu.domain.entities.user import UserEntity
+from urfu.domain.value_objects.user import TelegramId, UserId
+from urfu.infrastructure.database.models.user import UserModel
+from urfu.infrastructure.errors.gateways.user import UserNotFoundError
+
+
+@dataclass
+class UserGateway(UserReader, UserWriter):
+    session: AsyncSession
+
+    async def with_id(self, user_id: UserId) -> UserEntity:
+        stmt = select(UserModel).where(UserModel.id == user_id.value)
+
+        try:
+            result = (await self.session.scalars(stmt)).one()
+        except NoResultFound as err:
+            raise UserNotFoundError from err
+
+        return result.to_entity()
+
+    async def with_telegram_id(self, telegram_id: TelegramId) -> UserEntity:
+        stmt = select(UserModel).where(UserModel.telegram_id == telegram_id.value)
+
+        try:
+            result = (await self.session.scalars(stmt)).one()
+        except NoResultFound as err:
+            raise UserNotFoundError from err
+
+        return result.to_entity()
+
+    async def save(self, dto: CreateUserDTO) -> UserEntity:
+        stmt = (
+            insert(UserModel)
+            .values(
+                telegram_id=dto.telegram_id,
+                username=dto.username,
+            )
+            .returning(UserModel.id)
+        )
+
+        user_id = (await self.session.execute(stmt)).scalar_one()
+
+        return await self.with_id(UserId(user_id))

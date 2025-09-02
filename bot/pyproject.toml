@@ -1,0 +1,73 @@
+[project]
+name = "urfu"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiogram>=3.22.0",
+    "alembic>=1.16.5",
+    "dishka>=1.6.0",
+    "fastapi>=0.116.1",
+    "greenlet>=3.2.4",
+    "psycopg[binary]>=3.2.9",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.10.1",
+    "sqlalchemy>=2.0.43",
+    "uvicorn>=0.35.0",
+]
+
+[tool.ruff]
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ARG001",
+    "ANN003",
+    "ANN101",
+    "ANN102",
+    "ANN401",
+    "COM812",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    "D203",
+    "D212",
+    "D400",
+    "D415",
+    "EM101",
+    "EM102",
+    "EXE002",
+    "FBT",
+    "FIX002",
+    "ISC001",
+    "N999",
+    "PGH003",
+    "PLR0913",
+    "PLC0414",
+    "PT003",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "SIM102",
+    "TCH",
+    "TD002",
+    "TD003",
+    "TRY003",
+]
+fixable = ["ALL"]
+
+[tool.mypy]
+python_version = "3.13"
+pretty = true
+strict = true
+install_types = true
+ignore_missing_imports = true
+warn_unused_ignores = false
+plugins = ['pydantic.mypy']
