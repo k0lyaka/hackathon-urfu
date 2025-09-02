@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useState} from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
-import { ChevronLeft, ChevronRight, Check, GraduationCap } from "lucide-react"
+import { ChevronLeft, ChevronRight, Check, GraduationCap, AlertCircle } from "lucide-react"
 
 interface EgeScores {
     russian: number
@@ -20,6 +20,12 @@ interface EgeScores {
 interface RegistrationData {
     egeScores: EgeScores
     preferences: string
+}
+
+interface ValidationErrors {
+    russian?: string
+    math?: string
+    electiveScore?: string
 }
 
 export default function RegistrationPage() {
@@ -34,6 +40,8 @@ export default function RegistrationPage() {
         preferences: "",
     })
 
+    const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
+
     const totalSteps = 3
     const progress = (currentStep / totalSteps) * 100
 
@@ -45,6 +53,33 @@ export default function RegistrationPage() {
         { value: "history", label: "История" },
         { value: "social", label: "Обществознание" },
     ]
+
+    const validateScore = (score: number, field: keyof ValidationErrors): string | undefined => {
+        if (score < 0 || score > 100) {
+            return "Балл должен быть от 0 до 100"
+        }
+        if (score === 0) {
+            return "Введите балл"
+        }
+        return undefined
+    }
+
+    const handleScoreChange = (field: keyof EgeScores, value: string) => {
+        const numValue = Number.parseInt(value) || 0
+
+        setRegistrationData((prev) => ({
+            ...prev,
+            egeScores: { ...prev.egeScores, [field]: numValue },
+        }))
+
+        if (field === "russian" || field === "math" || field === "electiveScore") {
+            const error = validateScore(numValue, field as keyof ValidationErrors)
+            setValidationErrors((prev) => ({
+                ...prev,
+                [field]: error,
+            }))
+        }
+    }
 
     const handleNext = () => {
         if (currentStep < totalSteps) {
@@ -60,18 +95,20 @@ export default function RegistrationPage() {
 
     const handleSubmit = () => {
         console.log("Регистрация завершена:", registrationData)
-        alert("Регистрация успешно завершена!")
+        alert('Регистрация успешно завершена!')
+
     }
 
     const isStep1Valid = () => {
-        return (
+        const hasErrors = Object.values(validationErrors).some((error) => error !== undefined)
+        const hasAllScores =
             registrationData.egeScores.russian > 0 &&
             registrationData.egeScores.math > 0 &&
             registrationData.egeScores.elective &&
             registrationData.egeScores.electiveScore > 0
-        )
-    }
 
+        return !hasErrors && hasAllScores
+    }
 
     return (
         <div className="bg-background p-2 sm:p-4 min-h-screen sm:min-h-0">
@@ -89,7 +126,7 @@ export default function RegistrationPage() {
 
                 {/* Progress Bar */}
                 <div className="mb-3 sm:mb-4">
-                    <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                    <div className="flex justify-between text-xs text-muted-foreground mb-1 sm:mb-2">
             <span>
               Шаг {currentStep} из {totalSteps}
             </span>
@@ -120,43 +157,52 @@ export default function RegistrationPage() {
                                 <div className="space-y-1.5 sm:space-y-2">
                                     <Label className="text-xs font-medium">Русский язык (обязательный)</Label>
                                     <div className="flex gap-1.5 sm:gap-2">
-                                        <Input
-                                            type="number"
-                                            min="0"
-                                            max="100"
-                                            placeholder="Баллы"
-                                            value={registrationData.egeScores.russian || ""}
-                                            onChange={(e) =>
-                                                setRegistrationData((prev) => ({
-                                                    ...prev,
-                                                    egeScores: { ...prev.egeScores, russian: Number.parseInt(e.target.value) || 0 },
-                                                }))
-                                            }
-                                            className="sm:w-20 h-8 sm:h-9 text-xs sm:text-sm w-20"
-                                        />
+                                        <div className="flex flex-col">
+                                            <Input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                placeholder="Баллы"
+                                                value={registrationData.egeScores.russian || ""}
+                                                onChange={(e) => handleScoreChange("russian", e.target.value)}
+                                                className={`sm:w-20 h-8 sm:h-9 text-xs sm:text-sm w-20 ${
+                                                    validationErrors.russian ? "border-destructive" : ""
+                                                }`}
+                                            />
+                                        </div>
                                     </div>
+                                    {validationErrors.russian && (
+                                        <div className="flex items-center gap-1 text-destructive">
+                                            <AlertCircle className="w-3 h-3" />
+                                            <span className="text-xs">{validationErrors.russian}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Mathematics */}
                                 <div className="space-y-1.5 sm:space-y-2">
                                     <Label className="text-xs font-medium">Математика (профильный уровень)</Label>
                                     <div className="flex gap-1.5 sm:gap-2">
-
-                                        <Input
-                                            type="number"
-                                            min="0"
-                                            max="120"
-                                            placeholder="Баллы"
-                                            value={registrationData.egeScores.math || ""}
-                                            onChange={(e) =>
-                                                setRegistrationData((prev) => ({
-                                                    ...prev,
-                                                    egeScores: { ...prev.egeScores, math: Number.parseInt(e.target.value) || 0 },
-                                                }))
-                                            }
-                                            className="sm:w-20 h-8 sm:h-9 text-xs sm:text-sm w-20"
-                                        />
+                                        <div className="flex flex-col">
+                                            <Input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                placeholder="Баллы"
+                                                value={registrationData.egeScores.math || ""}
+                                                onChange={(e) => handleScoreChange("math", e.target.value)}
+                                                className={`sm:w-20 h-8 sm:h-9 text-xs sm:text-sm w-20 ${
+                                                    validationErrors.math ? "border-destructive" : ""
+                                                }`}
+                                            />
+                                        </div>
                                     </div>
+                                    {validationErrors.math && (
+                                        <div className="flex items-center gap-1 text-destructive">
+                                            <AlertCircle className="w-3 h-3" />
+                                            <span className="text-xs">{validationErrors.math}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Elective Subject */}
@@ -183,27 +229,32 @@ export default function RegistrationPage() {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        <Input
-                                            type="number"
-                                            min="0"
-                                            max="100"
-                                            placeholder="Баллы"
-                                            value={registrationData.egeScores.electiveScore || ""}
-                                            onChange={(e) =>
-                                                setRegistrationData((prev) => ({
-                                                    ...prev,
-                                                    egeScores: { ...prev.egeScores, electiveScore: Number.parseInt(e.target.value) || 0 },
-                                                }))
-                                            }
-                                            className="sm:w-20 h-8 sm:h-9 text-xs sm:text-sm w-20"
-                                        />
+                                        <div className="flex flex-col">
+                                            <Input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                placeholder="Баллы"
+                                                value={registrationData.egeScores.electiveScore || ""}
+                                                onChange={(e) => handleScoreChange("electiveScore", e.target.value)}
+                                                className={`sm:w-20 h-8 sm:h-9 text-xs sm:text-sm w-20 ${
+                                                    validationErrors.electiveScore ? "border-destructive" : ""
+                                                }`}
+                                            />
+                                        </div>
                                     </div>
+                                    {validationErrors.electiveScore && (
+                                        <div className="flex items-center gap-1 text-destructive">
+                                            <AlertCircle className="w-3 h-3" />
+                                            <span className="text-xs">{validationErrors.electiveScore}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="bg-muted p-2 sm:p-3 rounded-lg">
                                     <p className="text-xs text-muted-foreground leading-tight">
-                                        <strong>Важно:</strong> Убедитесь, что введенные баллы соответствуют вашим официальным результатам
-                                        ЕГЭ.
+                                        <strong>Важно:</strong> Баллы ЕГЭ должны быть от 0 до 100. Убедитесь, что введенные баллы
+                                        соответствуют вашим официальным результатам ЕГЭ.
                                     </p>
                                 </div>
                             </div>
