@@ -10,4 +10,7 @@ class CreateUserDTO(BaseModel):
 
 class UpdateUserDTO(BaseModel):
     id: UserId
+
     username: str | None = None
+    interest_tags: list[str] | None = None
+    full_interest_text: str | None = None
