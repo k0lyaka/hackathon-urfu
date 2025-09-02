@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from pydantic import HttpUrl, PostgresDsn, SecretStr
+from pydantic import HttpUrl, PostgresDsn, SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,6 +11,12 @@ class BotSettings(BaseSettings):
     secret: SecretStr
 
     url: HttpUrl
+
+    @property
+    @computed_field
+    def bot_id(self) -> int:
+        bot_id, _ = self.token.get_secret_value().split(":")
+        return int(bot_id)
 
 
 class DatabaseSettings(BaseSettings):

@@ -1,4 +1,5 @@
 from urfu.domain.entities.base import BaseEntity
+from urfu.domain.entities.exam_score import ExamScoreEntity
 from urfu.domain.value_objects.user import TelegramId, UserId
 
 
@@ -8,3 +9,5 @@ class UserEntity(BaseEntity[UserId]):
 
     interest_tags: list[str]
     full_interest_text: str | None
+
+    exam_scores: list[ExamScoreEntity]
