@@ -19,6 +19,8 @@ SCORES_2025 = {
     "27.03.04": 219,
 }
 
+BASE_API_URL = os.getenv("API_URL") or "http://localhost:8888"
+
 
 class ProgramItem(BaseModel):
     slug: str
@@ -94,7 +96,7 @@ async def main() -> None:
         }
 
         await client.post(
-            f"http://localhost:8888/specialization",
+            f"{BASE_API_URL}/specialization",
             json=payload,
             headers={
                 "Authorization": str(os.getenv("TOKEN")),
