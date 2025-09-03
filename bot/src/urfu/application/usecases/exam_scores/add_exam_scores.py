@@ -5,6 +5,7 @@ from urfu.application.common.security.id_provider import IdProvider
 from urfu.application.common.uow import UnitOfWork
 from urfu.application.contracts.exam_scores.add_exam_scores import AddExamScoresRequest
 from urfu.application.gateways.exam_score import ExamScoreWriter
+from urfu.application.gateways.user import UserReader
 from urfu.domain.dto.exam_score import CreateExamScoreDTO
 from urfu.domain.dto.user import UserDTO
 from urfu.domain.entities.user import UserEntity
@@ -13,6 +14,7 @@ from urfu.infrastructure.database.mappers.user import user_entity_to_dto
 
 @dataclass
 class AddExamScores(Interactor[AddExamScoresRequest, UserDTO]):
+    user_reader: UserReader
     exam_score_writer: ExamScoreWriter
 
     id_provider: IdProvider[UserEntity]
@@ -37,4 +39,5 @@ class AddExamScores(Interactor[AddExamScoresRequest, UserDTO]):
 
             await self.uow.commit()
 
-        return user_entity_to_dto(user)
+        updated_user = await self.user_reader.with_id(user.id)
+        return user_entity_to_dto(updated_user)

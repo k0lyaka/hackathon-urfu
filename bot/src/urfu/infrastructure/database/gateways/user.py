@@ -23,7 +23,7 @@ class UserGateway(UserReader, UserWriter, UserUpdater):
         stmt = select(UserModel).where(UserModel.id == user_id.value).options(*OPTIONS)
 
         try:
-            result = (await self.session.scalars(stmt)).one()
+            result = (await self.session.scalars(stmt)).unique().one()
         except NoResultFound as err:
             raise UserNotFoundError from err
 
