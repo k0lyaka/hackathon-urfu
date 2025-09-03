@@ -8,25 +8,25 @@ from urfu.application.contracts.users.update_interests import UpdateInterestsReq
 from urfu.application.usecases.exam_scores.add_exam_scores import AddExamScores
 from urfu.application.usecases.users.get import GetUser
 from urfu.application.usecases.users.update_interests import UpdateInterests
-from urfu.domain.entities.user import UserEntity
+from urfu.domain.dto.user import UserDTO
 
 router = APIRouter(prefix="/profile", tags=["Profile"], route_class=DishkaRoute)
 
 
 @router.get("")
-async def get_profile(interactor: FromDishka[GetUser]) -> UserEntity:
+async def get_profile(interactor: FromDishka[GetUser]) -> UserDTO:
     return await interactor(GetUserRequest())
 
 
 @router.post("/exams")
 async def add_exams_scores(
     req: AddExamScoresRequest, interactor: FromDishka[AddExamScores]
-) -> UserEntity:
+) -> UserDTO:
     return await interactor(req)
 
 
 @router.post("/interests")
 async def update_interests(
     req: UpdateInterestsRequest, interactor: FromDishka[UpdateInterests]
-) -> UserEntity:
+) -> UserDTO:
     return await interactor(req)

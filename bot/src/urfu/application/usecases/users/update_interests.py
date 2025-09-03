@@ -5,13 +5,14 @@ from urfu.application.common.security.id_provider import IdProvider
 from urfu.application.common.uow import UnitOfWork
 from urfu.application.contracts.users.update_interests import UpdateInterestsRequest
 from urfu.application.gateways.user import UserUpdater
-from urfu.domain.dto.user import UpdateUserDTO
+from urfu.domain.dto.user import UpdateUserDTO, UserDTO
 from urfu.domain.entities.user import UserEntity
 from urfu.infrastructure.adapters.openai.client import AiAdapter
+from urfu.infrastructure.database.mappers.user import user_entity_to_dto
 
 
 @dataclass
-class UpdateInterests(Interactor[UpdateInterestsRequest, UserEntity]):
+class UpdateInterests(Interactor[UpdateInterestsRequest, UserDTO]):
     user_updater: UserUpdater
 
     ai_adapter: AiAdapter
@@ -19,7 +20,7 @@ class UpdateInterests(Interactor[UpdateInterestsRequest, UserEntity]):
 
     uow: UnitOfWork
 
-    async def __call__(self, data: UpdateInterestsRequest) -> UserEntity:
+    async def __call__(self, data: UpdateInterestsRequest) -> UserDTO:
         user = await self.id_provider.get_user()
 
         tags = await self.ai_adapter.create_tags_from_user_input(data.interests)
@@ -35,4 +36,4 @@ class UpdateInterests(Interactor[UpdateInterestsRequest, UserEntity]):
 
             await self.uow.commit()
 
-        return user
+        return user_entity_to_dto(user)

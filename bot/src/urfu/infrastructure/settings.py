@@ -11,9 +11,10 @@ class BotSettings(BaseSettings):
     secret: SecretStr
 
     url: HttpUrl
+    public_url: HttpUrl
 
-    @property
     @computed_field
+    @property
     def bot_id(self) -> int:
         bot_id, _ = self.token.get_secret_value().split(":")
         return int(bot_id)

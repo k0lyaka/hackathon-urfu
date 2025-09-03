@@ -6,18 +6,20 @@ from urfu.application.common.uow import UnitOfWork
 from urfu.application.contracts.exam_scores.add_exam_scores import AddExamScoresRequest
 from urfu.application.gateways.exam_score import ExamScoreWriter
 from urfu.domain.dto.exam_score import CreateExamScoreDTO
+from urfu.domain.dto.user import UserDTO
 from urfu.domain.entities.user import UserEntity
+from urfu.infrastructure.database.mappers.user import user_entity_to_dto
 
 
 @dataclass
-class AddExamScores(Interactor[AddExamScoresRequest, UserEntity]):
+class AddExamScores(Interactor[AddExamScoresRequest, UserDTO]):
     exam_score_writer: ExamScoreWriter
 
     id_provider: IdProvider[UserEntity]
 
     uow: UnitOfWork
 
-    async def __call__(self, data: AddExamScoresRequest) -> UserEntity:
+    async def __call__(self, data: AddExamScoresRequest) -> UserDTO:
         user = await self.id_provider.get_user()
 
         async with self.uow:
@@ -35,4 +37,4 @@ class AddExamScores(Interactor[AddExamScoresRequest, UserEntity]):
 
             await self.uow.commit()
 
-        return user
+        return user_entity_to_dto(user)

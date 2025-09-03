@@ -37,7 +37,7 @@ class UserGateway(UserReader, UserWriter, UserUpdater):
         )
 
         try:
-            result = (await self.session.scalars(stmt)).one()
+            result = (await self.session.scalars(stmt)).unique().one()
         except NoResultFound as err:
             raise UserNotFoundError from err
 
