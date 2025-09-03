@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from urfu.infrastructure.adapters.openai.client import AiAdapter
 from urfu.infrastructure.settings import AppSettings
 from urfu.presentation.bot.handlers import setup_handlers
 from urfu.presentation.bot.middleware import setup_middlewares
@@ -42,6 +43,15 @@ class SQLAlchemyProvider(Provider):
     ) -> AsyncIterable[AsyncSession]:
         async with sessionmaker() as session:
             yield session
+
+
+class AiProvider(Provider):
+    @provide(scope=Scope.APP)
+    def provide_ai_adapter(self, settings: AppSettings) -> AiAdapter:
+        return AiAdapter(
+            settings.ai.token.get_secret_value(),
+            settings.ai.base_url.unicode_string(),
+        )
 
 
 class BotProvider(Provider):

@@ -19,6 +19,13 @@ class BotSettings(BaseSettings):
         return int(bot_id)
 
 
+class AiSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix="AI_", env_file=".env", extra="allow")
+
+    token: SecretStr
+    base_url: HttpUrl | None
+
+
 class DatabaseSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="DB_", env_file=".env", extra="allow")
 
@@ -45,12 +52,14 @@ class DatabaseSettings(BaseSettings):
 
 @dataclass
 class AppSettings:
+    ai: AiSettings
     bot: BotSettings
     database: DatabaseSettings
 
 
 def get_settings() -> AppSettings:
     return AppSettings(
+        ai=AiSettings(),
         bot=BotSettings(),
         database=DatabaseSettings(),
     )

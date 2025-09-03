@@ -1,6 +1,10 @@
 from dishka import AsyncContainer, make_async_container
 
-from urfu.infrastructure.ioc.providers.adapters import BotProvider, SQLAlchemyProvider
+from urfu.infrastructure.ioc.providers.adapters import (
+    AiProvider,
+    BotProvider,
+    SQLAlchemyProvider,
+)
 from urfu.infrastructure.ioc.providers.gateways import GatewaysProvider
 from urfu.infrastructure.ioc.providers.security import SecurityProvider
 from urfu.infrastructure.ioc.providers.settings import SettingsProvider
@@ -15,4 +19,5 @@ def get_container() -> AsyncContainer:
         GatewaysProvider(),
         SecurityProvider(),
         BotProvider(),
+        AiProvider(),
     )
