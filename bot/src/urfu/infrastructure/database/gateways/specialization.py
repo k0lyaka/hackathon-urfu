@@ -115,6 +115,16 @@ class SpecializationGateway(
 
         suitable_specializations = []
 
+        user_tags = user.interest_tags or []
+        positive_tags = {
+            t.strip().lower() for t in user_tags if not t.strip().startswith("-")
+        }
+        negative_tags = {
+            t.strip()[1:].lower()
+            for t in user_tags
+            if t.strip().startswith("-") and len(t.strip()) > 1
+        }
+
         for specialization in all_specializations:
             latest_scores = [
                 score for score in specialization.scores if score.year == CURRENT_YEAR
@@ -129,7 +139,13 @@ class SpecializationGateway(
                 suitable_specializations.append(specialization)
 
         def sort_key(spec: SpecializationEntity) -> tuple[int, int]:
-            matching_tags = len(set(user.interest_tags) & set(spec.tags))
+            spec_tag_set = {t.strip().lower() for t in spec.tags}
+
+            matching_positive = len(positive_tags & spec_tag_set)
+            matching_negative = len(negative_tags & spec_tag_set)
+
+            # anti-tags subtract attractiveness
+            matching_tags = matching_positive - matching_negative
 
             return (-matching_tags, -total_user_score)
 

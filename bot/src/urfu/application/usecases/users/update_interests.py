@@ -24,6 +24,10 @@ class UpdateInterests(Interactor[UpdateInterestsRequest, UserDTO]):
 
     async def __call__(self, data: UpdateInterestsRequest) -> UserDTO:
         user = await self.id_provider.get_user()
+
+        if data.interests == user.full_interest_text:
+            return user_entity_to_dto(user)
+
         all_tags = await self.specialization_reader.get_all_tags()
 
         tags = await self.ai_adapter.create_tags_from_user_input(
