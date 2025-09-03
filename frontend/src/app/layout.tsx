@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import "./globals.css"
 import {DisableZoom} from "@/components/DisableZoom";
+import BottomNavigation from "@/components/bottom-navigation";
 
 export const metadata: Metadata = {
     title: "v0 App",
@@ -24,6 +25,7 @@ export default function RootLayout({
         <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <DisableZoom />
         <Suspense fallback={null}>{children}</Suspense>
+        <BottomNavigation />
         <Analytics />
         </body>
         </html>
