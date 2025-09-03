@@ -151,7 +151,21 @@ function Form() {
 
   return (
     <div className="min-h-screen bg-background p-4 h-screen">
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto space-y-2">
+        {formData.interests &&
+          formData.subjects.math &&
+          formData.subjects.russian &&
+          formData.subjects.additionalScore && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-2"
+              onClick={() => navigate("/specializations")}
+            >
+              <ArrowRight />
+              Специальности
+            </Button>
+          )}
         <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
       </div>
 

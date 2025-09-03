@@ -5,10 +5,12 @@ import { ApiContext } from "@/contexts/ApiContext";
 import type { Specialization } from "@/lib/api";
 import { ArrowLeft, Star, TrendingUp, Users } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Specializations() {
   const [specializations, setSpecializations] = useState<Specialization[]>([]);
   const api = useContext(ApiContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!api.client) return;
@@ -28,6 +30,7 @@ function Specializations() {
               variant="ghost"
               size="sm"
               className="flex items-center gap-2"
+              onClick={() => navigate("/form")}
             >
               <ArrowLeft />
               Отредактировать анкету
