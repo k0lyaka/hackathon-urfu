@@ -15,6 +15,8 @@ from urfu.domain.dto.specialization import (
     UpdateSpecializationDTO,
 )
 from urfu.domain.entities.specialization import SpecializationEntity
+from urfu.domain.entities.user import UserEntity
+from urfu.domain.enums.subject import SubjectEnum
 from urfu.domain.value_objects.specialization import SpecializationId
 from urfu.infrastructure.database.models.specialization import SpecializationModel
 from urfu.infrastructure.errors.gateways.specialization import (
@@ -22,6 +24,7 @@ from urfu.infrastructure.errors.gateways.specialization import (
 )
 
 OPTIONS = [joinedload(SpecializationModel.scores)]
+CURRENT_YEAR = 2025
 
 
 @dataclass
@@ -76,3 +79,60 @@ class SpecializationGateway(
         await self.session.execute(stmt)
 
         return await self.with_id(dto.id)
+
+    async def get_all_with_scores(self) -> list[SpecializationEntity]:
+        stmt = select(SpecializationModel).options(*OPTIONS)
+        results = (await self.session.scalars(stmt)).unique().all()
+        return [result.to_entity() for result in results]
+
+    async def get_suitable_for_user(
+        self, user: UserEntity
+    ) -> list[SpecializationEntity]:
+        all_specializations = await self.get_all_with_scores()
+
+        user_scores = {score.subject: score.score for score in user.exam_scores}
+
+        if (
+            SubjectEnum.RUSSIAN not in user_scores
+            or SubjectEnum.MATH not in user_scores
+        ):
+            return []
+
+        russian_score = user_scores[SubjectEnum.RUSSIAN]
+        math_score = user_scores[SubjectEnum.MATH]
+
+        additional_subjects = {
+            k: v
+            for k, v in user_scores.items()
+            if k not in [SubjectEnum.RUSSIAN, SubjectEnum.MATH]
+        }
+
+        best_additional_score = 0
+        if additional_subjects:
+            best_additional_score = max(additional_subjects.values())
+
+        total_user_score = russian_score + math_score + best_additional_score
+
+        suitable_specializations = []
+
+        for specialization in all_specializations:
+            latest_scores = [
+                score for score in specialization.scores if score.year == CURRENT_YEAR
+            ]
+
+            if not latest_scores:
+                continue
+
+            min_score = latest_scores[0].minimal_score
+
+            if total_user_score >= min_score:
+                suitable_specializations.append(specialization)
+
+        def sort_key(spec: SpecializationEntity) -> tuple[int, int]:
+            matching_tags = len(set(user.interest_tags) & set(spec.tags))
+
+            return (-matching_tags, -total_user_score)
+
+        suitable_specializations.sort(key=sort_key)
+
+        return suitable_specializations

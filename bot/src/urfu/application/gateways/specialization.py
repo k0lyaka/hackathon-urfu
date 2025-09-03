@@ -5,6 +5,7 @@ from urfu.domain.dto.specialization import (
     UpdateSpecializationDTO,
 )
 from urfu.domain.entities.specialization import SpecializationEntity
+from urfu.domain.entities.user import UserEntity
 from urfu.domain.value_objects.specialization import SpecializationId
 
 
@@ -14,6 +15,12 @@ class SpecializationReader(Protocol):
     ) -> SpecializationEntity: ...
 
     async def get_all_tags(self) -> set[str]: ...
+
+    async def get_all_with_scores(self) -> list[SpecializationEntity]: ...
+
+    async def get_suitable_for_user(
+        self, user: UserEntity
+    ) -> list[SpecializationEntity]: ...
 
 
 class SpecializationWriter(Protocol):

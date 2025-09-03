@@ -5,7 +5,11 @@ from fastapi import APIRouter
 from urfu.application.contracts.specializations.create import (
     CreateSpecializationRequest,
 )
+from urfu.application.contracts.specializations.get_raiting import (
+    GetSpecializationsRequest,
+)
 from urfu.application.usecases.specializations.create import CreateSpecialization
+from urfu.application.usecases.specializations.get_raiting import GetSpecializations
 from urfu.domain.dto.specialization import Specialization
 
 router = APIRouter(
@@ -18,3 +22,10 @@ async def create_specialization(
     req: CreateSpecializationRequest, interactor: FromDishka[CreateSpecialization]
 ) -> Specialization:
     return await interactor(req)
+
+
+@router.get("")
+async def get_specializations(
+    interactor: FromDishka[GetSpecializations],
+) -> list[Specialization]:
+    return await interactor(GetSpecializationsRequest())
