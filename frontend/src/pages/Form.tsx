@@ -35,6 +35,7 @@ const additionalSubjects = {
 const currentYear = new Date().getFullYear();
 
 function Form() {
+  const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     subjects: {
@@ -144,9 +145,13 @@ function Form() {
   };
 
   const handleSubmit = () => {
-    api.client!.updateInterests({ interests: formData.interests }).then(() => {
-      navigate("/specializations");
-    });
+    setIsLoading(true);
+    api
+      .client!.updateInterests({ interests: formData.interests })
+      .then(() => {
+        navigate("/specializations");
+      })
+      .catch(() => setIsLoading(false));
   };
 
   return (
@@ -276,6 +281,7 @@ function Form() {
                   id="wishes"
                   placeholder="Расскажите о своих целях, интересах или вопросах..."
                   value={formData.interests}
+                  disabled={isLoading}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -312,7 +318,7 @@ function Form() {
         <Button
           variant="outline"
           onClick={handleBack}
-          disabled={currentStep === 1}
+          disabled={currentStep === 1 || isLoading}
           className="flex items-center gap-2 bg-transparent"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -322,14 +328,18 @@ function Form() {
         {currentStep < totalSteps ? (
           <Button
             onClick={handleNext}
-            disabled={!isStepValid()}
+            disabled={!isStepValid() || isLoading}
             className="flex items-center gap-2"
           >
             Далее
             <ArrowRight className="w-4 h-4" />
           </Button>
         ) : (
-          <Button onClick={handleSubmit} className="flex items-center gap-2">
+          <Button
+            onClick={handleSubmit}
+            className="flex items-center gap-2"
+            disabled={isLoading}
+          >
             <CheckCircle className="w-4 h-4" />
             Отправить
           </Button>
