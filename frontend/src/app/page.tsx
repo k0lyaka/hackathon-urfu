@@ -54,7 +54,7 @@ export default function RegistrationPage() {
         { value: "social", label: "Обществознание" },
     ]
 
-    const validateScore = (score: number, field: keyof ValidationErrors): string | undefined => {
+    const validateScore = (score: number, _field: keyof ValidationErrors): string | undefined => {
         if (score < 0 || score > 100) {
             return "Балл должен быть от 0 до 100"
         }

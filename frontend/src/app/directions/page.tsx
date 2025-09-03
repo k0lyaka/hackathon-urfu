@@ -145,9 +145,9 @@ export default function DirectionsPage() {
     }, [searchQuery, selectedCategory, minScoreFilter])
 
     useEffect(() => {
-        // @ts-ignore
+        // @ts-expect-error: Telegram WebApp is not defined yet
         if (typeof window !== "undefined" && window.Telegram?.WebApp) {
-            // @ts-ignore
+            // @ts-expect-error: Telegram WebApp is not defined yet
             const tg = window.Telegram.WebApp
             tg.ready()
             tg.expand()
@@ -156,20 +156,6 @@ export default function DirectionsPage() {
             tg.disableVerticalSwipes()
         }
     }, [])
-
-    const handleDirectionSelect = (direction: Direction) => {
-        // @ts-ignore
-        if (typeof window !== "undefined" && window.Telegram?.WebApp) {
-            // @ts-ignore
-            const tg = window.Telegram.WebApp
-            tg.sendData(
-                JSON.stringify({
-                    type: "direction_selected",
-                    data: direction,
-                }),
-            )
-        }
-    }
 
     return (
         <div className="bg-background p-2 sm:p-4 min-h-screen sm:min-h-0">
@@ -247,7 +233,6 @@ export default function DirectionsPage() {
                             <Card
                                 key={direction.id}
                                 className="cursor-pointer hover:shadow-md transition-shadow"
-                                onClick={() => handleDirectionSelect(direction)}
                             >
                                 <CardHeader className="pb-2 px-3 sm:px-4 pt-3">
                                     <div className="flex items-start justify-between gap-2">
