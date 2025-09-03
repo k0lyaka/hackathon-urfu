@@ -35,6 +35,18 @@ services:
       postgres:
         condition: service_healthy
 
+  setup_bot:
+    image: urfu-entrants:latest
+    restart: no
+
+    command: python -m urfu.presentation.bot
+
+    environment: *shared-env
+
+    depends_on:
+      bot:
+        condition: service_started
+
   migrations:
     image: urfu-entrants:latest
     restart: no
