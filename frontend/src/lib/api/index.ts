@@ -47,6 +47,7 @@ export interface SpecializationScore {
   id: number;
   minimal_score: number;
   year: number;
+  seats: number;
 }
 
 export interface Specialization {

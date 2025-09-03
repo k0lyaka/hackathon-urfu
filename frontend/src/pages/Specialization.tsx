@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApiContext } from "@/contexts/ApiContext";
 import type { Specialization } from "@/lib/api";
-import { ArrowLeft, Clock, Star, TrendingUp, Users } from "lucide-react";
+import { ArrowLeft, Star, TrendingUp, Users } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 
 function Specializations() {
@@ -78,12 +78,10 @@ function Specializations() {
 
               <CardContent className="pt-0">
                 {/* Stats */}
-                <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
+                <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />4 года
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />0 мест
+                    <Users className="w-4 h-4" />
+                    {specialty.scores[0].seats} мест
                   </div>
                   <div className="flex items-center gap-1">
                     <TrendingUp className="w-4 h-4" />
