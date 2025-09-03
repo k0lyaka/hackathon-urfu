@@ -8,6 +8,7 @@ class SpecializationScore(BaseModel):
 
     minimal_score: int
     year: int
+    seats: int
 
 
 class Specialization(BaseModel):

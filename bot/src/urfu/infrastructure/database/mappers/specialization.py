@@ -10,6 +10,7 @@ def specialization_score_entity_to_dto(
         id=entity.id.value,
         minimal_score=entity.minimal_score,
         year=entity.year,
+        seats=entity.seats,
     )
 
 
