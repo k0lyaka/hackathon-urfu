@@ -70,4 +70,5 @@ strict = true
 install_types = true
 ignore_missing_imports = true
 warn_unused_ignores = false
+disallow_subclassing_any = false
 plugins = ['pydantic.mypy', 'sqlalchemy.ext.mypy.plugin']
