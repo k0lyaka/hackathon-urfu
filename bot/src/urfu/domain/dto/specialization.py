@@ -38,4 +38,5 @@ class UpdateSpecializationDTO(BaseModel):
 class CreateSpecializationScoreDTO(BaseModel):
     specialization_id: SpecializationId
     minimal_score: int
+    seats: int
     year: int

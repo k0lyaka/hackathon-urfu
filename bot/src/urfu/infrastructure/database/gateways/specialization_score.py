@@ -59,6 +59,7 @@ class SpecializationScoreGateway(SpecializationScoreReader, SpecializationWriter
                 specialization_id=dto.specialization_id.value,
                 minimal_score=dto.minimal_score,
                 year=dto.year,
+                seats=dto.seats,
             )
             .returning(SpecializationScoreModel.id)
         )

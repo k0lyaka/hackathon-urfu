@@ -8,4 +8,5 @@ from urfu.domain.value_objects.specialization import (
 class SpecializationScoreEntity(BaseEntity[SpecializationScoreId]):
     specialization_id: SpecializationId
     minimal_score: int
+    seats: int
     year: int

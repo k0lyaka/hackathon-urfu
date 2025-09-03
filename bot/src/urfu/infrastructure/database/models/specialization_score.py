@@ -21,6 +21,8 @@ class SpecializationScoreModel(BaseModel):
     )
 
     minimal_score: Mapped[int] = mapped_column()
+    seats: Mapped[int] = mapped_column()
+
     year: Mapped[int] = mapped_column()
 
     def to_entity(self) -> SpecializationScoreEntity:
