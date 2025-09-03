@@ -90,8 +90,12 @@ async def main() -> None:
             "institute": "ИРИТ-РТФ",
             "description": program.description,
             "scores": [
-                {"year": 2025, "minimal_score": SCORES_2025[program.code]},
-                {"year": 2024, "minimal_score": program.passingScore},
+                {
+                    "year": 2025,
+                    "minimal_score": SCORES_2025[program.code],
+                    "seats": program.budgetSeatsCount,
+                },
+                {"year": 2024, "minimal_score": program.passingScore, "seats": 0},
             ],
         }
 
