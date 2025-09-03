@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -96,6 +96,7 @@ export default function RegistrationPage() {
     const handleSubmit = () => {
         console.log("Регистрация завершена:", registrationData)
         alert('Регистрация успешно завершена!')
+        window.location.href = "/directions"
 
     }
 
