@@ -13,6 +13,8 @@ class BotSettings(BaseSettings):
     url: HttpUrl
     public_url: HttpUrl
 
+    admin_ids: list[int]
+
     @computed_field
     @property
     def bot_id(self) -> int:

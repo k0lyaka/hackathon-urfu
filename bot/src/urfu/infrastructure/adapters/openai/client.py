@@ -1,8 +1,15 @@
 import json
+from typing import cast
 
 from openai import AsyncOpenAI
 
-from urfu.infrastructure.adapters.openai.prompts import USER_TAGS_PROMPT
+from urfu.infrastructure.adapters.openai.prompts import (
+    PROGRAM_TAGS_PROMPT,
+    USER_TAGS_PROMPT,
+)
+
+TOP_TRACK_CODES = ("09.03.03", "09.03.04")
+ALGO_TRACK_CODES = ("09.03.04",)
 
 
 class AiAdapter:
@@ -30,10 +37,38 @@ class AiAdapter:
             stream=False,
         )
 
-        return response.choices[0].message.content
+        return cast(str, response.choices[0].message.content)
 
     async def create_tags_from_user_input(
-        self, user_input: str, model: str | None = None
+        self, user_input: str, model: str | None = None, **kwargs: str
     ) -> list[str]:
-        response = await self._make_completion(USER_TAGS_PROMPT, user_input, model)
-        return json.loads(response)
+        response = await self._make_completion(
+            USER_TAGS_PROMPT.format(**kwargs), user_input, model
+        )
+        return cast(list[str], json.loads(response))
+
+    async def create_tags_from_program_description(
+        self,
+        program_name: str,
+        program_code: str,
+        program_description: str,
+        model: str | None = None,
+    ) -> list[str]:
+        program_description = (
+            f"Наименование программы: {program_name}\n"
+            f"Код программы: {program_code}\n"
+            f"Институт: ИРИТ-РТФ, УрФУ\n\n"
+        ) + program_description
+
+        if program_code in TOP_TRACK_CODES:
+            program_description += "\nМОЖНО ПОСТУПИТЬ НА ТОП-ТРЕК"
+        if program_code in ALGO_TRACK_CODES:
+            program_description += "\nМОЖНО ПОСТУПИТЬ НА АЛГО-ТРЕК"
+
+        response = await self._make_completion(
+            PROGRAM_TAGS_PROMPT, program_description, model
+        )
+
+        print(response)
+
+        return cast(list[str], json.loads(response))

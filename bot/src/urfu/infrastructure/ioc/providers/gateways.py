@@ -2,8 +2,21 @@ from dishka import AnyOf, Provider, Scope, provide
 
 from urfu.application.common.uow import UnitOfWork
 from urfu.application.gateways.exam_score import ExamScoreReader, ExamScoreWriter
+from urfu.application.gateways.specialization import (
+    SpecializationReader,
+    SpecializationUpdater,
+    SpecializationWriter,
+)
+from urfu.application.gateways.specialization_score import (
+    SpecializationScoreReader,
+    SpecializationScoreWriter,
+)
 from urfu.application.gateways.user import UserReader, UserUpdater, UserWriter
 from urfu.infrastructure.database.gateways.exam_score import ExamScoreGateway
+from urfu.infrastructure.database.gateways.specialization import SpecializationGateway
+from urfu.infrastructure.database.gateways.specialization_score import (
+    SpecializationScoreGateway,
+)
 from urfu.infrastructure.database.gateways.user import UserGateway
 from urfu.infrastructure.database.uow import UnitOfWorkImpl
 
@@ -25,6 +38,23 @@ class GatewaysProvider(Provider):
         provides=AnyOf[
             ExamScoreReader,
             ExamScoreWriter,
+        ],
+    )
+
+    specialization_gateway = provide(
+        SpecializationGateway,
+        provides=AnyOf[
+            SpecializationReader,
+            SpecializationWriter,
+            SpecializationUpdater,
+        ],
+    )
+
+    specialization_score_gateway = provide(
+        SpecializationScoreGateway,
+        provides=AnyOf[
+            SpecializationScoreReader,
+            SpecializationScoreWriter,
         ],
     )
 
