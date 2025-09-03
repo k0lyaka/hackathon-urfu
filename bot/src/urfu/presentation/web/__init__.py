@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from urfu.infrastructure.ioc import get_container
 from urfu.presentation.web.routers import setup_routers
+from urfu.presentation.web.routers.errors import setup_error_handler
 
 
 def create_app() -> FastAPI:
@@ -19,6 +20,7 @@ def create_app() -> FastAPI:
     container = get_container()
 
     setup_dishka(container, app)
+    setup_error_handler(app)
     setup_routers(app)
 
     return app
