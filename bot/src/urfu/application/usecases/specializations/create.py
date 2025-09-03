@@ -65,6 +65,7 @@ class CreateSpecialization(Interactor[CreateSpecializationRequest, Specializatio
                     specialization_id=specialization.id,
                     minimal_score=item.minimal_score,
                     year=item.year,
+                    seats=item.seats,
                 )
                 for item in data.scores
             ]
