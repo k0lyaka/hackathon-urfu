@@ -43,8 +43,10 @@ class CreateSpecialization(Interactor[CreateSpecializationRequest, Specializatio
         user = await self.id_provider.get_user()
         user.has_access(self.settings.bot.admin_ids)
 
+        all_tags = await self.specialization_reader.get_all_tags()
+
         tags = await self.ai_adapter.create_tags_from_program_description(
-            data.name, data.code, data.description
+            data.name, data.code, data.description, tags=all_tags
         )
 
         async with self.uow:

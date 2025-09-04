@@ -53,6 +53,7 @@ class AiAdapter:
         program_code: str,
         program_description: str,
         model: str | None = None,
+        **kwargs: str,
     ) -> list[str]:
         program_description = (
             f"Наименование программы: {program_name}\n"
@@ -66,9 +67,7 @@ class AiAdapter:
             program_description += "\nМОЖНО ПОСТУПИТЬ НА АЛГО-ТРЕК"
 
         response = await self._make_completion(
-            PROGRAM_TAGS_PROMPT, program_description, model
+            PROGRAM_TAGS_PROMPT.format(**kwargs), program_description, model
         )
-
-        print(response)
 
         return cast(list[str], json.loads(response))
