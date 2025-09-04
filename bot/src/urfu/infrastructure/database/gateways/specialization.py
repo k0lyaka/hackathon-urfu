@@ -73,7 +73,7 @@ class SpecializationGateway(
         stmt = (
             update(SpecializationModel)
             .where(SpecializationModel.id == dto.id.value)
-            .values(**dto.model_dump())
+            .values(**dto.model_dump(exclude={"id"}, exclude_unset=True))
         )
 
         await self.session.execute(stmt)
