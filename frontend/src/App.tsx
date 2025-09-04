@@ -26,7 +26,7 @@ function App() {
         <Route path="/specializations" element={<Specializations />} />
       </Routes>
 
-      <Toaster />
+      <Toaster position={"top-center"} />
     </ApiContext.Provider>
   );
 }
