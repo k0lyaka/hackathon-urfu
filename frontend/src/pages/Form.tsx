@@ -16,6 +16,7 @@ import { ApiContext } from "@/contexts/ApiContext";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface FormData {
   subjects: {
@@ -79,26 +80,33 @@ function Form() {
 
   const handleNext = () => {
     if (currentStep === 1) {
-      void api.client!.addExamScores({
-        exams: [
-          {
-            year: currentYear,
-            subject: "math",
-            score: formData.subjects.math!,
-          },
-          {
-            year: currentYear,
-            subject: "russian",
-            score: formData.subjects.russian!,
-          },
-          {
-            year: currentYear,
-            subject: formData.subjects
-              .additional as keyof typeof additionalSubjects,
-            score: formData.subjects.additionalScore!,
-          },
-        ],
-      });
+      api
+        .client!.addExamScores({
+          exams: [
+            {
+              year: currentYear,
+              subject: "math",
+              score: formData.subjects.math!,
+            },
+            {
+              year: currentYear,
+              subject: "russian",
+              score: formData.subjects.russian!,
+            },
+            {
+              year: currentYear,
+              subject: formData.subjects
+                .additional as keyof typeof additionalSubjects,
+              score: formData.subjects.additionalScore!,
+            },
+          ],
+        })
+        .then(() => toast.success("Баллы успешно обновлены"))
+        .catch(() =>
+          toast.error("Ошибка при обновлении баллов", {
+            description: "Попробуйте еще раз",
+          })
+        );
     }
 
     if (currentStep < totalSteps) {
@@ -150,8 +158,14 @@ function Form() {
       .client!.updateInterests({ interests: formData.interests })
       .then(() => {
         navigate("/specializations");
+        toast.success("Интересы успешно обновлены");
       })
-      .catch(() => setIsLoading(false));
+      .catch(() => {
+        setIsLoading(false);
+        toast.error("Ошибка при обновлении интересов", {
+          description: "Попробуйте еще раз",
+        });
+      });
   };
 
   return (

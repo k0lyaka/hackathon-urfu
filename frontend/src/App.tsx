@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ApiClient, { defaultBaseUrl } from "./lib/api";
 import Form from "./pages/Form";
 import Specializations from "./pages/Specialization";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
   const [api, setApi] = useState<ApiClient | null>(null);
@@ -24,6 +25,8 @@ function App() {
         <Route path="/form" element={<Form />} />
         <Route path="/specializations" element={<Specializations />} />
       </Routes>
+
+      <Toaster />
     </ApiContext.Provider>
   );
 }

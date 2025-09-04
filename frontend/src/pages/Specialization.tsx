@@ -6,6 +6,7 @@ import type { Specialization } from "@/lib/api";
 import { ArrowLeft, Star, TrendingUp, Users } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 function Specializations() {
   const [specializations, setSpecializations] = useState<Specialization[]>([]);
@@ -15,9 +16,16 @@ function Specializations() {
   useEffect(() => {
     if (!api.client) return;
 
-    api.client.getSpecializations().then((data) => {
-      setSpecializations(data);
-    });
+    api.client
+      .getSpecializations()
+      .then((data) => {
+        setSpecializations(data);
+      })
+      .catch(() =>
+        toast.error("Ошибка при загрузке специальностей", {
+          description: "Попробуйте перезагрузить страницу",
+        })
+      );
   }, [api.client]);
 
   return (
