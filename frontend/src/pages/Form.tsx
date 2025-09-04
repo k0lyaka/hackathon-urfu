@@ -80,6 +80,20 @@ function Form() {
 
   const handleNext = () => {
     if (currentStep === 1) {
+      if (
+        formData.subjects.math! < 0 ||
+        formData.subjects.math! > 100 ||
+        formData.subjects.russian! < 0 ||
+        formData.subjects.russian! > 100 ||
+        formData.subjects.additionalScore! < 0 ||
+        formData.subjects.additionalScore! > 100
+      ) {
+        toast.error("Пожалуйста, введите корректные баллы (0-100)", {
+          description: "Попробуйте еще раз",
+        });
+        return;
+      }
+
       api
         .client!.addExamScores({
           exams: [
